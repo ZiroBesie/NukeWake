@@ -1,4 +1,5 @@
 using Content.Shared.Light.Components;
+using Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 using Content.Shared.Light.EntitySystems;
 using Content.Shared.Maps;
 using Robust.Shared.Audio.Systems;
@@ -20,6 +21,7 @@ public abstract class SharedWeatherSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly SharedRoofSystem _roof = default!;
+    [Dependency] private readonly CMUSharedZLevelsSystem _zLevel = default!;
 
     private EntityQuery<BlockWeatherComponent> _blockQuery;
 
@@ -43,10 +45,12 @@ public abstract class SharedWeatherSystem : EntitySystem
 
     public bool CanWeatherAffect(EntityUid uid, MapGridComponent grid, TileRef tileRef, RoofComponent? roofComp = null)
     {
-        if (tileRef.Tile.IsEmpty)
-            return true;
+        // Empty tiles can still be covered by a roof from a z-level above.
 
         if (Resolve(uid, ref roofComp, false) && _roof.IsRooved((uid, grid, roofComp), tileRef.GridIndices))
+            return false;
+
+        if (_zLevel.HasTileAbove(tileRef.GridIndices, uid))
             return false;
 
         var tileDef = (ContentTileDefinition) _tileDefManager[tileRef.Tile.TypeId];

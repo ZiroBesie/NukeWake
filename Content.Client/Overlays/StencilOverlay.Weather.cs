@@ -44,7 +44,8 @@ public sealed partial class StencilOverlay
 
         var worldHandle = args.WorldHandle;
         var mapId = args.MapId;
-        var worldAABB = args.WorldAABB;
+        var worldAABB = args.WorldAABB.Enlarged(1f);
+        var eye = args.Viewport.Eye;
 
         // Cut out the irrelevant bits via stencil
         // This is why we don't just use parallax; we might want specific tiles to get drawn over
@@ -64,7 +65,7 @@ public sealed partial class StencilOverlay
                 worldHandle.SetTransform(matty);
                 _entManager.TryGetComponent(grid.Owner, out RoofComponent? roofComp);
 
-                foreach (var tile in grid.Comp.GetTilesIntersecting(worldAABB))
+                foreach (var tile in grid.Comp.GetTilesIntersecting(worldAABB, ignoreEmpty: false))
                 {
                     // Ignored tiles for stencil
                     if (_weather.CanWeatherAffect(grid.Owner, grid, tile, roofComp))
@@ -72,10 +73,16 @@ public sealed partial class StencilOverlay
                         continue;
                     }
 
-                    var gridTile = new Box2(tile.GridIndices * grid.Comp.TileSize,
-                        (tile.GridIndices + Vector2i.One) * grid.Comp.TileSize);
+                    if (eye is not null)
+                    {
+                        var rotation = -eye.Rotation;
+                        var offset = rotation.ToWorldVec() * -0.5f;
+                        var gridTile = new Box2(
+                            tile.GridIndices * grid.Comp.TileSize + offset,
+                            (tile.GridIndices + Vector2i.One) * grid.Comp.TileSize + offset);
 
-                    worldHandle.DrawRect(gridTile, Color.White);
+                        worldHandle.DrawRect(gridTile, Color.White);
+                    }
                 }
             }
 

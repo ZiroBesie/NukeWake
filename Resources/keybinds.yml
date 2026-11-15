@@ -593,6 +593,11 @@ binds:
 - function: LookUp
   type: State
   key: Space
+- function: CMUToggleShootDownZLevel
+  type: State
+  key: Space
+  mod1: Shift
+  mod2: Control
 - function: MappingUnselect
   type: State
   key: MouseRight

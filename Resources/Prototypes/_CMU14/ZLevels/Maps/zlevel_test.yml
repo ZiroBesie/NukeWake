@@ -1,0 +1,19 @@
+- type: gameMap
+  id: ZLevelTest
+  mapName: 'Z-Level Test'
+  mapPath: /Maps/Test/zlevel_test_ground.yml
+  mapsAbove:
+  - /Maps/Test/zlevel_test_above.yml
+  minPlayers: 0
+  maxPlayers: 100
+  stations:
+    ZLevelTest:
+      stationProto: FalloutStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Z-Level Test'
+      - type: StationJobs
+        overflowJobs:
+        - Wastelander
+        availableJobs:
+          Wastelander: [ -1, -1 ]

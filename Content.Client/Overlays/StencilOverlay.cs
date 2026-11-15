@@ -1,11 +1,14 @@
 using System.Numerics;
 using Content.Client.Parallax;
+using Content.Client.Viewport;
 using Content.Client.Weather;
+using Content.Shared._CMU14.ZLevels;
 using Content.Shared._NC.Clouds; // NC - Clouds
 using Content.Shared.Salvage;
 using Content.Shared.Weather;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -23,6 +26,7 @@ public sealed partial class StencilOverlay : Overlay
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
+    [Dependency] private readonly IConfigurationManager _config = default!;
     private readonly ParallaxSystem _parallax;
     private readonly SharedTransformSystem _transform;
     private readonly SpriteSystem _sprite;
@@ -56,7 +60,10 @@ public sealed partial class StencilOverlay : Overlay
             _blep = _clyde.CreateRenderTarget(args.Viewport.Size, new RenderTargetFormatParameters(RenderTargetColorFormat.Rgba8Srgb), name: "overlay-stencil"); // #Forge-Change
         }
 
-        if (_entManager.TryGetComponent<WeatherComponent>(mapUid, out var comp))
+        var drawWeather = args.Viewport.Eye is not ScalingViewport.ZEye { Depth: < 0 } ||
+                          _config.GetCVar(CMUZLevelsCVars.WeatherLowerLayers);
+
+        if (drawWeather && TryGetWeatherComponentForPass(args, mapUid, out var weatherMapUid, out var comp))
         {
             var maskPrepared = false; // #Forge-Change: one mask preparation for all weather effects.
             foreach (var (proto, weather) in comp.Weather)
@@ -72,7 +79,7 @@ public sealed partial class StencilOverlay : Overlay
                     maskPrepared = true;
                 }
                 // #Forge-Change-End
-                var alpha = _weather.GetPercent(weather, mapUid);
+                var alpha = _weather.GetPercent(weather, weatherMapUid);
                 DrawWeather(args, weatherProto, alpha); // #Forge-Change
             }
         }
@@ -91,6 +98,43 @@ public sealed partial class StencilOverlay : Overlay
 
         args.WorldHandle.UseShader(null);
         args.WorldHandle.SetTransform(Matrix3x2.Identity);
+    }
+
+    private bool TryGetWeatherComponentForPass(
+        in OverlayDrawArgs args,
+        EntityUid mapUid,
+        out EntityUid weatherMapUid,
+        out WeatherComponent comp)
+    {
+        if (_entManager.TryGetComponent<WeatherComponent>(mapUid, out var mapWeather) &&
+            mapWeather.Weather.Count > 0)
+        {
+            weatherMapUid = mapUid;
+            comp = mapWeather;
+            return true;
+        }
+
+        if (args.Viewport.Eye is not ScalingViewport.ZEye zEye ||
+            zEye.WeatherSourceMapId == MapId.Nullspace ||
+            zEye.WeatherSourceMapId == args.MapId)
+        {
+            weatherMapUid = default;
+            comp = default!;
+            return false;
+        }
+
+        weatherMapUid = _mapManager.GetMapEntityId(zEye.WeatherSourceMapId);
+        if (weatherMapUid == EntityUid.Invalid ||
+            !_entManager.TryGetComponent<WeatherComponent>(weatherMapUid, out var sourceWeather) ||
+            sourceWeather.Weather.Count == 0)
+        {
+            weatherMapUid = default;
+            comp = default!;
+            return false;
+        }
+
+        comp = sourceWeather;
+        return true;
     }
 
     // #Forge-Change-Start: release the cached weather mask and other owned rendering resources.

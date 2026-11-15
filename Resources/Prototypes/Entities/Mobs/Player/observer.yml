@@ -27,6 +27,8 @@
         density: 15
         layer:
         - GhostImpassable
+  #CMU
+  - type: CMUZLevelGhostMover
 
 - type: entity
   parent:

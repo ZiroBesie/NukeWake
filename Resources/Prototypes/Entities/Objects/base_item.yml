@@ -40,6 +40,8 @@
     noRot: false
   - type: Pullable
   - type: DamageExaminable
+  #CMU
+  - type: CMUZPhysics
 
 - type: entity
   name: "storage item"

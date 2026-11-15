@@ -1,0 +1,68 @@
+- type: entity
+  id: CMUZLevelRampBase
+  abstract: true
+  name: ramp
+  description: A sloped walkway that smoothly connects two Z-levels.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    drawdepth: WallMountedItems
+    noRot: true
+    sprite: _CMU14/Structures/stairs.rsi
+    offset: 0,0.5
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures:
+      slowdown:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        layer:
+        - SlipLayer
+        mask:
+        - ItemMask
+        density: 1000
+        hard: false
+  - type: SpeedModifierContacts
+    walkSpeedModifier: 0.8
+    sprintSpeedModifier: 0.8
+  - type: Tag
+    tags:
+    - Structure
+
+- type: entity
+  parent: CMUZLevelRampBase
+  id: CMUZLevelRampTop
+  suffix: Top
+  components:
+  - type: Sprite
+    state: ramptop
+  - type: CMUZLevelHighGround
+    heightCurve:
+    - 1.05
+    - 1.05
+    - 0.575
+    - 0.575
+    stick: true
+
+- type: entity
+  parent: CMUZLevelRampBase
+  id: CMUZLevelRampLower
+  suffix: Lower
+  components:
+  - type: Sprite
+    state: ramplower
+  - type: CMUZLevelHighGround
+    heightCurve:
+    - 0.575
+    - 0.575
+    - 0.001
+    - 0.001
+    stick: true

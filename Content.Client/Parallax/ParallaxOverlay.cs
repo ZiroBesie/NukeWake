@@ -1,5 +1,8 @@
 using System.Numerics;
 using Content.Client.Parallax.Managers;
+using Content.Client.Viewport;
+using Content.Shared._CMU14.ZLevels;
+using Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 using Content.Shared.CCVar;
 using Content.Shared.Parallax.Biomes;
 using Robust.Client.Graphics;
@@ -20,6 +23,7 @@ public sealed class ParallaxOverlay : Overlay
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IParallaxManager _manager = default!;
     private readonly ParallaxSystem _parallax;
+    private readonly CMUSharedZLevelsSystem _zLevel;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowWorld;
 
@@ -28,6 +32,7 @@ public sealed class ParallaxOverlay : Overlay
         ZIndex = ParallaxSystem.ParallaxZIndex;
         IoCManager.InjectDependencies(this);
         _parallax = _entManager.System<ParallaxSystem>();
+        _zLevel = _entManager.System<CMUSharedZLevelsSystem>();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
@@ -35,7 +40,15 @@ public sealed class ParallaxOverlay : Overlay
         if (args.MapId == MapId.Nullspace || _entManager.HasComponent<BiomeComponent>(_mapManager.GetMapEntityId(args.MapId)))
             return false;
 
-        return true;
+        // Draw parallax only for the lowest z-level.
+        if (args.Viewport.Eye is ScalingViewport.ZEye zEye)
+            return zEye.LowestDepth == zEye.Depth;
+
+        if (!_configurationManager.GetCVar(CMUZLevelsCVars.Enabled) ||
+            !_configurationManager.GetCVar(CMUZLevelsCVars.RenderEnabled))
+            return true;
+
+        return !_zLevel.TryMapDown(args.MapUid, out _);
     }
 
     protected override void Draw(in OverlayDrawArgs args)

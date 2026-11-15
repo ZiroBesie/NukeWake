@@ -1,4 +1,5 @@
 using Content.Shared.Input;
+using Content.Shared._CMU14.Input;
 using Robust.Shared.Input;
 
 namespace Content.Client.Input
@@ -97,6 +98,7 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.TargetLeftFoot);
             human.AddFunction(ContentKeyFunctions.TargetRightLeg);
             human.AddFunction(ContentKeyFunctions.TargetRightFoot);
+            human.AddFunction(CMUKeyFunctions.CMUToggleShootDownZLevel);
             // Shitmed Change End
 
             // actions should be common (for ghosts, mobs, etc)

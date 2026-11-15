@@ -23,3 +23,12 @@
     ref: 1
     op: Keep
     func: NotEqual
+
+# Draws if the texture in the stencil buffer is equal to white.
+- type: shader
+  id: StencilEqualDraw
+  kind: canvas
+  stencil:
+    ref: 1
+    op: Keep
+    func: Equal

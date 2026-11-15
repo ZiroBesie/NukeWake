@@ -123,6 +123,12 @@ namespace Content.Shared.Maps
         /// </summary>
         [DataField("indestructible")] public bool Indestructible = false;
 
+        /// <summary>
+        /// Used for lighting calculation through z-levels.
+        /// </summary>
+        [DataField]
+        public bool Transparent = false;
+
         public void AssignTileId(ushort id)
         {
             TileId = id;

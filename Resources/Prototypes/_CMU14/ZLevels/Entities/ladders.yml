@@ -1,0 +1,55 @@
+- type: entity
+  id: CMUZLevelLadderBase
+  abstract: true
+  name: z-level ladder
+  description: A ladder that connects two Z-levels. Activate it to climb.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _Nuclear14/Structures/Misc/ladderss13.rsi
+    state: ladder_bottom
+    noRot: true
+    offset: 0, 0.25
+    drawdepth: WallTops
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Tag
+    tags:
+    - Structure
+
+- type: entity
+  parent: CMUZLevelLadderBase
+  id: CMUZLevelLadderUp
+  name: z-level ladder
+  suffix: Up
+  description: A ladder that connects two Z-levels. Activate it to climb up.
+  components:
+  - type: CMUZLevelLadder
+    offset: 1
+    landingLocalPosition: 0.05
+  # Keeps a climber standing on the opening at the level above.
+  - type: CMUZLevelHighGround
+    heightCurve:
+    - 1.05
+    - 1.05
+    stick: true
+    supportOnlyFromAbove: true
+
+- type: entity
+  parent: CMUZLevelLadderBase
+  id: CMUZLevelLadderDown
+  name: z-level ladder
+  suffix: Down
+  description: A ladder that connects two Z-levels. Activate it to climb down.
+  components:
+  - type: Sprite
+    state: ladder_top
+  - type: CMUZLevelLadder
+    offset: -1
+    landingLocalPosition: 0

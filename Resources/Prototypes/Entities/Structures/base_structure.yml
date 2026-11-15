@@ -21,6 +21,8 @@
         layer:
         - MidImpassable
         - LowImpassable
+  #CMU
+  - type: CMUZPhysics
   - type: Pullable
   - type: Tag
     tags:

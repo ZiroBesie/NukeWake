@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using Content.Client._CMU14.ZLevels.Core;
 using Content.Client.Administration.Managers;
 using Content.Client.Chat;
 using Content.Client.Chat.Managers;
@@ -63,6 +64,7 @@ public sealed class ChatUIController : UIController
     [UISystemDependency] private readonly GhostSystem? _ghost = default;
     [UISystemDependency] private readonly TypingIndicatorSystem? _typingIndicator = default;
     [UISystemDependency] private readonly ChatSystem? _chatSys = default;
+    [UISystemDependency] private readonly CMUClientZLevelsSystem? _zLevels = default;
     [UISystemDependency] private readonly PsionicChatUpdateSystem? _psionic = default!; //Nyano - Summary: makes the psionic chat available.
     [UISystemDependency] private readonly TransformSystem? _transform = default;
     [UISystemDependency] private readonly MindSystem? _mindSystem = default!;
@@ -669,15 +671,22 @@ public sealed class ChatUIController : UIController
     {
         if (_transform == null || _examine == null || EntityManager.Deleted(entity)
             || !EntityManager.TryGetComponent<TransformComponent>(entity, out var xform)
-            || xform.MapID == MapId.Nullspace || xform.MapID != _eye.CurrentMap)
+            || xform.MapID == MapId.Nullspace)
+            return false;
+
+        var sameMap = xform.MapID == _eye.CurrentMap;
+        if (!sameMap && _zLevels?.TryGetSpeechBubbleZOffset(entity, out _, xform) != true)
             return false;
 
         var position = _transform.GetMapCoordinates(entity);
-        if (!_eye.GetWorldViewbounds().Contains(position.Position))
+        if (sameMap && !_eye.GetWorldViewbounds().Contains(position.Position))
             return false;
 
         var player = _player.LocalEntity;
         if (player == null || player == entity || !_examine.IsOccluded(player.Value))
+            return true;
+
+        if (!sameMap)
             return true;
 
         return _examine.InRangeUnOccluded(_transform.GetMapCoordinates(player.Value), position, 0f,
