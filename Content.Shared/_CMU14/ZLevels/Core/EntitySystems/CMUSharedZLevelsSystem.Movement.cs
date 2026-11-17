@@ -21,8 +21,6 @@ public abstract partial class CMUSharedZLevelsSystem
     private const float ZVelocityLimit = 20.0f;
     protected const float MinActiveZVelocity = 0.05f;
 
-    private int _zDebugTickCounter;
-
     /// <summary>
     /// The maximum height at which a player will automatically climb higher when stepping on a highground entity.
     /// </summary>
@@ -155,12 +153,9 @@ public abstract partial class CMUSharedZLevelsSystem
 
             if (zPhys.LocalPosition < 0) //We wanna fall down on ZLevel below
             {
-                Log.Info($"ZDEBUG fall check {ToPrettyString(uid)} local={zPhys.LocalPosition:F3} vel={zPhys.Velocity:F3} dist={distanceToGround:F3} sticky={stickyGround} body={physics.BodyStatus} parent={xform.ParentUid} map={xform.MapUid} grid={xform.GridUid}");
-                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zdebug_fall.txt"), $"fall {uid} local={zPhys.LocalPosition:F3} vel={zPhys.Velocity:F3} dist={distanceToGround:F3} sticky={stickyGround} body={physics.BodyStatus} parent={xform.ParentUid} map={xform.MapUid} grid={xform.GridUid}\n"); } catch { }
                 if (CanProcessZLevelTransition(uid, -1))
                 {
                     var moved = TryMoveDownOrChasm(uid);
-                    Log.Info($"ZDEBUG fall result {ToPrettyString(uid)} moved={moved}");
                     if (moved)
                     {
                         zPhys.LocalPosition += 1;
@@ -226,9 +221,6 @@ public abstract partial class CMUSharedZLevelsSystem
 
             DirtyZPhysics(uid, zPhys, oldVelocity, oldHeight);
         }
-
-        if (zDebugLogThisTick)
-            Log.Info($"ZDEBUG movement tick seen={zDebugSeen}");
     }
 
     private void StopZMovement(EntityUid uid, CMUZPhysicsComponent zPhys)
