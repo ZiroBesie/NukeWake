@@ -26,3 +26,44 @@ cmu-zlevel-ladder-finish-others = {$user} climbs the ladder.
 
 ui-options-header-cmu-zlevels = Z-Levels
 ui-options-function-cmu-toggle-shoot-down-z-level = Toggle shoot down Z-level
+
+cmu-zlevel-ladder-retract = Retract ladder
+cmu-zlevel-ladder-collapse = The ladder collapses!
+
+cmu-zlevel-ladder-no-grid = Cannot deploy ladder here: no grid.
+cmu-zlevel-ladder-no-levels = Cannot deploy ladder here: no adjacent Z-levels.
+
+cmu-opening-vent-open = Open
+cmu-opening-vent-closed = Closed
+cmu-opening-vent-toggle-state = {$state}
+cmu-opening-vent-dir-toggled = Direction: {$direction}
+cmu-opening-vent-state-closed = Closed
+cmu-opening-vent-state-locked = Locked (low pressure)
+cmu-opening-vent-state-open = Open
+cmu-opening-vent-examine = Here: {$here}, There: {$there}
+cmu-opening-vent-unlinked = Unlinked
+
+cmu-pipe-riser-dir-toggled = Direction: {$direction}
+cmu-pipe-riser-linked = Linked
+cmu-pipe-riser-unlinked = Unlinked
+cmu-z-direction-above = Above
+cmu-z-direction-below = Below
+
+cmu-power-riser-role-source = Source
+cmu-power-riser-role-sink = Sink
+cmu-power-riser-role-toggled = Role: {$role}
+cmu-power-riser-dir-toggled = Direction: {$direction}
+cmu-power-riser-unlinked = Unlinked
+cmu-power-riser-source-live = Source: Live
+cmu-power-riser-source-dead = Source: Dead
+cmu-power-riser-sink = Sink
+
+cmu-zlevel-ladder-throw-start-self = You start throwing {$item} {$direction}.
+cmu-zlevel-ladder-throw-start-others = {$user} starts throwing {$item} {$direction}.
+cmu-zlevel-ladder-throw-finish-self = You throw {$item} {$direction}.
+cmu-zlevel-ladder-throw-finish-others = {$user} throws {$item} {$direction}.
+cmu-zlevel-ladder-throw-up = up
+cmu-zlevel-ladder-throw-down = down
+cmu-zlevel-ladder-no-level = There is no Z-level there.
+
+cmu-zlevel-stairs-no-level = The stairs don't lead there.
