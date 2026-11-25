@@ -1,9 +1,9 @@
 using System.Numerics;
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 using Content.Shared.Maps;
 using Robust.Shared.Map;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 public abstract partial class CMUSharedZLevelsSystem
 {
@@ -38,11 +38,11 @@ public abstract partial class CMUSharedZLevelsSystem
                 continue;
 
             var anchored = _map.GetAnchoredEntities(gridUid, grid, candidate);
-            while (anchored.MoveNext(out var uid))
+            foreach (var uid in anchored)
             {
                 if (!TryComp<CMUZLevelHighGroundComponent>(uid, out var ramp) || !ramp.Stick
                     || ramp.SupportOnlyFromAbove || ramp.HeightCurve.Count < 2
-                    || !TryGetHighGroundCurveT(GetHighGroundGridDirection(uid.Value), ramp, local, x == 0 && y == 0, out _))
+                    || !TryGetHighGroundCurveT(uid, ramp, local, x == 0 && y == 0, out _))
                 {
                     continue;
                 }

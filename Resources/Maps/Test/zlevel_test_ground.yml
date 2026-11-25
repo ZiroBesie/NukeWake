@@ -43,6 +43,8 @@ entities:
         version: 2
         nodes: []
     - type: SpreaderGrid
+    - type: CMUZLevelMapComponent
+      mapAbove: zlevel_test_above
 - proto: WallSolid
   entities:
   - uid: 100
@@ -366,4 +368,12 @@ entities:
     components:
     - type: Transform
       pos: 2.5,2.5
+      parent: 2
+
+- proto: CMUZLevelLadderDown
+  entities:
+  - uid: 11
+    components:
+    - type: Transform
+      pos: 5.5,8.5
       parent: 2

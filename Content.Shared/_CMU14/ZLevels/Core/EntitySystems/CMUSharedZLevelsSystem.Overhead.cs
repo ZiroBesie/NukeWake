@@ -1,7 +1,7 @@
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 using Robust.Shared.Map;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 public abstract partial class CMUSharedZLevelsSystem
 {
@@ -37,7 +37,7 @@ public abstract partial class CMUSharedZLevelsSystem
         for (var i = 0; i < depth; i++)
         {
             // The source floor and every intervening floor can hide the entity from below.
-            if (_map.TryFindGridAt(current, position, out var gridUid, out var grid) &&
+            if (_mapManager.TryFindGridAt(Transform(current).MapID, position, out var gridUid, out var grid) &&
                 !CMUZLevelOpeningCache.IsOpeningTile(gridUid, grid, position, _map, TilDefMan))
             {
                 return false;

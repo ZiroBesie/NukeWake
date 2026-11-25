@@ -8,7 +8,7 @@ namespace Content.Shared._CMU14.ZLevels.Core.Components;
 /// <summary>
 /// Allows an entity to move up and down the z-levels by gravity or jumping
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(fieldDeltas: true),
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true, fieldDeltas: true),
  Access(typeof(CMUSharedZLevelsSystem))]
 public sealed partial class CMUZPhysicsComponent : Component
 {
@@ -32,6 +32,13 @@ public sealed partial class CMUZPhysicsComponent : Component
     public float Bounciness = 0.3f;
 
     // Visuals
+
+    /// <summary>
+    /// Apply elevation through the generic Z renderer. Multipart visuals can
+    /// disable this and compose elevation with their own sprites and click bounds.
+    /// </summary>
+    [DataField]
+    public bool ApplySpriteElevation = true;
 
     /// <summary>
     /// Used only by the client.

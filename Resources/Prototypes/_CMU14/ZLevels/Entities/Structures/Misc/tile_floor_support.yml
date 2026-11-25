@@ -1,0 +1,10 @@
+﻿- type: entity
+  id: AU14TileFloorSupport
+  name: floor support
+  suffix: AU14 z-build, tile support
+  components:
+  - type: Transform
+    anchored: true
+  - type: TileFloorSupport
+  - type: StructuralSupport
+    cantileverSpan: 1

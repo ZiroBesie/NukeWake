@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 
-namespace Content.Shared.CMU14.ZLevels.Core.Components;
+namespace Content.Shared._CMU14.ZLevels.Core.Components;
 
 /// <summary>
 /// Directional CMSS13-style multi-Z stairs.

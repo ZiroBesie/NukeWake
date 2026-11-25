@@ -50,6 +50,9 @@ public abstract partial class CMUSharedZLevelsSystem : EntitySystem
         _xformQuery = GetEntityQuery<TransformComponent>();
 
         InitMovement();
+        InitBuckle();
+        InitHover();
+        InitializeZPhysicsPresentation();
         InitThrowing();
         InitView();
     }

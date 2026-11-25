@@ -1,0 +1,27 @@
+﻿- type: entity
+  id: RMCBigRedRocksProp
+  name: big red rocks
+  description: A pile of large red rocks.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Objects/Materials/ore.rsi
+    state: iron
+    color: "#aa4444"
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.8,-0.8,0.8,0.8"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+        hard: true

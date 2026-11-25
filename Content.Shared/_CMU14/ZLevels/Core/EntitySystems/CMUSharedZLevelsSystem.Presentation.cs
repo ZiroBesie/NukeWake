@@ -1,6 +1,6 @@
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 public abstract partial class CMUSharedZLevelsSystem
 {
@@ -8,8 +8,6 @@ public abstract partial class CMUSharedZLevelsSystem
     {
         // Own component lifecycle and generated-state hooks here. Presentation consumers subscribe
         // to the domain notification instead of competing for exclusive component event ownership.
-        SubscribeLocalEvent<CMUZPhysicsComponent, ComponentStartup>(OnZPhysicsPresentationStartup);
-        SubscribeLocalEvent<CMUZPhysicsComponent, ComponentRemove>(OnZPhysicsPresentationRemoved);
         SubscribeLocalEvent<CMUZPhysicsComponent, AfterAutoHandleStateEvent>(OnZPhysicsPresentationState);
     }
 

@@ -1,11 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 using Content.Shared.Throwing;
 using JetBrains.Annotations;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 public abstract partial class CMUSharedZLevelsSystem
 {

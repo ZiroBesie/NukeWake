@@ -1,16 +1,12 @@
 using System.Numerics;
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Physics.Dynamics;
-using Robust.Shared.Physics.Systems;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 public abstract partial class CMUSharedZLevelsSystem
 {
-    private readonly HashSet<FixtureProxy> _climbLandingBlockers = new();
-
     /// <summary>
     /// Checks a prospective climb landing without moving the climber or anyone they are pulling.
     /// Uses the same floors, openings and elevated supports as falling physics.
@@ -25,34 +21,25 @@ public abstract partial class CMUSharedZLevelsSystem
         if (distance < -MaxStepHeight || distance > GroundSnapDistance)
             return false;
 
-        if (!TryComp<FixturesComponent>(climber, out var fixtures))
+        if (!HasComp<FixturesComponent>(climber))
             return true;
 
         // Test the destination before moving the climber; resolving an overlap after teleporting can trap them.
-        var transform = new Robust.Shared.Physics.Transform(worldPosition, _transform.GetWorldRotation(climber));
-        var query = new FixtureQueryArgs(new QueryFilter
+        var bounds = Box2.CenteredAround(worldPosition, Vector2.One);
+        var intersecting = _lookup.GetEntitiesIntersecting(Transform(map.Owner).MapID, bounds);
+        foreach (var blocker in intersecting)
         {
-            LayerBits = -1,
-            MaskBits = -1,
-            Flags = QueryFlags.Dynamic | QueryFlags.Static,
-        });
-        _climbLandingBlockers.Clear();
-        foreach (var fixture in fixtures.Fixtures.Values)
-        {
-            if (!fixture.Hard)
-                continue;
-            for (var child = 0; child < fixture.Shape.ChildCount; child++)
-                _lookup.GetFixturesIntersecting(Transform(map).MapID, fixture.Shape, child, transform, _climbLandingBlockers, query);
-
-            foreach (var blocker in _climbLandingBlockers)
+            if (blocker == climber ||
+                !TryComp<FixturesComponent>(blocker, out var blockerFixtures))
             {
-                if (blocker.Entity == climber || !blocker.Body.CanCollide || !blocker.Fixture.Hard)
-                    continue;
-                if ((fixture.CollisionMask & blocker.Fixture.CollisionLayer) != 0 ||
-                    (fixture.CollisionLayer & blocker.Fixture.CollisionMask) != 0)
+                continue;
+            }
+
+            foreach (var fixture in blockerFixtures.Fixtures.Values)
+            {
+                if (fixture.Hard)
                     return false;
             }
-            _climbLandingBlockers.Clear();
         }
 
         return true;

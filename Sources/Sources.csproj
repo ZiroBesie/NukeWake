@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- References to Robust entities -->
+    <RobustReference Include="NukeWake" Path="$(SolutionDir)..\.slnx" />
+    
+    <!-- YAML serialization support -->
+    <PackageReference Include="YamlDotNet" Version="15.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Structures\Structures.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

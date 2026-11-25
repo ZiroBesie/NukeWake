@@ -1,10 +1,10 @@
-using Content.Shared.CMU14.ZLevels.Core.Components;
+using Content.Shared._CMU14.ZLevels.Core.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared._RMC14.Inventory;
 using Content.Shared._RMC14.Ladder;
 
-namespace Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+namespace Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
 // clicking a ladder with the pulling hand hits the pull's virtual item, which eats every interaction,
 // so you could never start a climb while dragging someone. route that click to the ladder instead,

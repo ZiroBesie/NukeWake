@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 
-namespace Content.Shared.CMU14.ZLevels.Core.Components;
+namespace Content.Shared._CMU14.ZLevels.Core.Components;
 
 /// <summary>
 /// One half of a cross-z pair. The pairing system links this entity to the

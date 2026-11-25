@@ -1,4 +1,4 @@
-namespace Content.Shared.CMU14.ZLevels.Core.Components;
+namespace Content.Shared._CMU14.ZLevels.Core.Components;
 
 /// <summary>
 ///     Raised before an active body's vertical simulation, allowing equipment to control its descent.

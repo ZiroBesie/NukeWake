@@ -49,6 +49,7 @@ public sealed partial class CMUZLevelsSystem : CMUSharedZLevelsSystem
     private void OnGameMapLoad(PostGameMapLoad ev)
     {
         try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zdebug_hooks.txt"), $"gamemapload {ev.GameMap.MapName} above={ev.GameMap.MapsAbove.Count} below={ev.GameMap.MapsBelow.Count} tmp={System.IO.Path.GetTempPath()}\n"); } catch (System.Exception ex) { try { System.IO.File.AppendAllText("C:\\Users\\Мопс\\AppData\\Local\\Temp\\opencode\\zdebug_hooks_err.txt", ex.ToString()); } catch { } }
+if (ev.GameMap.MapsAbove.Count == 0 && ev.GameMap.MapsBelow.Count == 0)
         if (ev.GameMap.MapsAbove.Count == 0 && ev.GameMap.MapsBelow.Count == 0)
             return;
 
@@ -59,23 +60,50 @@ public sealed partial class CMUZLevelsSystem : CMUSharedZLevelsSystem
         Dictionary<EntityUid, int> dict = new();
         dict.Add(mainMap, 0);
 
-        EntityManager.AddComponents(mainMap, ev.GameMap.ZLevelsComponentOverrides);
+        // Only add ZLevelsComponentOverrides if the map supports ZLevels
+        if (ev.GameMap.ZLevelsComponentOverrides != null)
+        {
+            try
+            {
+                EntityManager.AddComponents(mainMap, ev.GameMap.ZLevelsComponentOverrides);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to add ZLevelsComponentOverrides to main map '{ev.GameMap.MapName}': {ex.Message}");
+                // Continue without crashing - allow the round to proceed anyway
+            }
+        }
 
-        //Loading maps below first
+        // Loading maps below first
         var depth = ev.GameMap.MapsBelow.Count * -1;
         foreach (var mapBelow in ev.GameMap.MapsBelow)
         {
             if (!_mapLoader.TryLoadMap(mapBelow, out var mapEnt, out _))
             {
-                Log.Error($"Failed to load map for Station zNetwork at depth {depth}!");
+                Log.Error($"Failed to load map for Station zNetwork at depth {depth}! Skipping...");
+                // Don't continue with this map - don't add it to dict
                 continue;
             }
 
-            Log.Info($"Created map {mapEnt.Value.Comp.MapId} for Station zNetwork at level {depth}");
-            EntityManager.AddComponents(mapEnt.Value, ev.GameMap.ZLevelsComponentOverrides);
-            _map.InitializeMap(mapEnt.Value.Comp.MapId);
-            _meta.SetEntityName(mapEnt.Value, $"{ev.GameMap.MapName} [{depth}]");
-            dict.Add(mapEnt.Value, depth);
+            try
+            {
+                Log.Info($"Created map {mapEnt.Value.Comp.MapId} for Station zNetwork at level {depth}");
+                // Add null check to prevent nullable reference warnings
+                var overrides = ev.GameMap.ZLevelsComponentOverrides ?? null;
+                if (overrides != null)
+                {
+                    EntityManager.AddComponents(mapEnt.Value, overrides!);
+                }
+                _map.InitializeMap(mapEnt.Value.Comp.MapId);
+                _meta.SetEntityName(mapEnt.Value, $"{ev.GameMap.MapName} [{depth}]");
+                dict.Add(mapEnt.Value, depth);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to initialize map for Station zNetwork at level {depth}: {ex.Message}");
+                // Remove from dict to prevent issues
+                dict.Remove(mapEnt.Value);
+            }
             depth++;
         }
 
@@ -85,15 +113,29 @@ public sealed partial class CMUZLevelsSystem : CMUSharedZLevelsSystem
         {
             if (!_mapLoader.TryLoadMap(mapAbove, out var mapEnt, out _))
             {
-                Log.Error($"Failed to load map for Station zNetwork at depth {depth}!");
+                Log.Error($"Failed to load map for Station zNetwork at depth {depth}! Skipping...");
                 continue;
             }
 
-            Log.Info($"Created map {mapEnt.Value.Comp.MapId} for Station zNetwork at level {depth}");
-            EntityManager.AddComponents(mapEnt.Value, ev.GameMap.ZLevelsComponentOverrides);
-            _map.InitializeMap(mapEnt.Value.Comp.MapId);
-            _meta.SetEntityName(mapEnt.Value, $"{ev.GameMap.MapName} [{depth}]");
-            dict.Add(mapEnt.Value, depth);
+            try
+            {
+                Log.Info($"Created map {mapEnt.Value.Comp.MapId} for Station zNetwork at level {depth}");
+                // Add null check to prevent nullable reference warnings
+                var overrides = ev.GameMap.ZLevelsComponentOverrides ?? null;
+                if (overrides != null)
+                {
+                    EntityManager.AddComponents(mapEnt.Value, overrides!);
+                }
+                _map.InitializeMap(mapEnt.Value.Comp.MapId);
+                _meta.SetEntityName(mapEnt.Value, $"{ev.GameMap.MapName} [{depth}]");
+                dict.Add(mapEnt.Value, depth);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to initialize map for Station zNetwork at level {depth}: {ex.Message}");
+                // Remove from dict to prevent issues
+                dict.Remove(mapEnt.Value);
+            }
             depth++;
         }
 

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rsi>
+  <texture path="world.png"/>
+  <state name="fog" frames="1"/>
+</rsi>

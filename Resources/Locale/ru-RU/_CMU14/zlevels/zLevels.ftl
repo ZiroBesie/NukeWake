@@ -64,6 +64,5 @@ cmu-zlevel-ladder-throw-finish-self = Вы бросаете {$item} {$direction}
 cmu-zlevel-ladder-throw-finish-others = {$user} бросает {$item} {$direction}.
 cmu-zlevel-ladder-throw-up = вверх
 cmu-zlevel-ladder-throw-down = вниз
-cmu-zlevel-ladder-no-level = Нет Z-уровня там.
 
 cmu-zlevel-stairs-no-level = Лестница не ведет туда.

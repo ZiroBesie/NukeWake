@@ -1,6 +1,6 @@
-using Content.Shared.CMU14.ZLevels.Core.EntitySystems;
+using Content.Shared._CMU14.ZLevels.Core.EntitySystems;
 
-namespace Content.Shared.CMU14.ZLevels.Core.Components;
+namespace Content.Shared._CMU14.ZLevels.Core.Components;
 
 /// <summary>
 /// Server-side z-physics override that lifts an entity to <see cref="TargetMap"/>, holds it there,
